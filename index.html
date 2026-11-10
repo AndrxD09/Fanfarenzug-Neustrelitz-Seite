@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#183c32">
+  <meta name="description" content="Musik und Aufnahmen des Fanfarenzugs Neustrelitz.">
+  <title>Musik | Fanfarenzug Neustrelitz</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --forest: #183c32;
+      --forest-deep: #102b25;
+      --gold: #d3a94f;
+      --paper: #fff;
+      --ink: #202a25;
+      --muted: #64716a;
+      --line: #d9ded6;
+      --white: #fffefa;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background-color: var(--paper);
+      color: var(--ink);
+      font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 8px 12px;
+      background: #fff;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .topbar-image {
+      display: block;
+      width: min(30vw, 320px);
+      height: auto;
+      padding: 8px;
+      background: #fff;
+      border-radius: 8px;
+    }
+
+    .action-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      width: min(100% - 40px, 1000px);
+      margin: 0 auto;
+      padding-top: 18px;
+    }
+
+    .action-control {
+      min-height: 42px;
+      padding: 8px 14px;
+      border: 1px solid var(--forest);
+      border-radius: 4px;
+      font: inherit;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .action-control:focus-visible {
+      outline: 3px solid var(--gold);
+      outline-offset: 2px;
+    }
+
+    .action-secondary {
+      background: #fff;
+      color: var(--forest);
+    }
+
+    .action-primary {
+      background: var(--forest);
+      color: #fff;
+    }
+
+    .action-control:disabled {
+      cursor: wait;
+      opacity: 0.65;
+    }
+
+    .upload-status {
+      width: min(100% - 40px, 1000px);
+      margin: 8px auto 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    main {
+      width: min(100% - 40px, 1000px);
+      margin: 0 auto;
+      padding: 42px 0 80px;
+    }
+
+    .intro {
+      padding: 0 0 34px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    h2, p { margin-top: 0; }
+
+    .intro-copy {
+      max-width: 590px;
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      margin: 30px 0 14px;
+    }
+
+    h2 {
+      margin-bottom: 0;
+      color: var(--forest-deep);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.55rem;
+      font-weight: 400;
+    }
+
+    .section-count {
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    .track-list {
+      border-top: 1px solid var(--line);
+    }
+
+    .empty-state {
+      margin: 0;
+      padding: 18px 4px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .track {
+      display: grid;
+      grid-template-columns: 44px minmax(0, 1fr);
+      gap: 18px;
+      align-items: start;
+      padding: 22px 4px;
+      border-bottom: 1px solid var(--line);
+      animation: arrive 500ms both;
+    }
+
+    .track:nth-child(2) { animation-delay: 80ms; }
+    .track:nth-child(3) { animation-delay: 160ms; }
+
+    .track-number {
+      padding-top: 1px;
+      color: #738178;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.15rem;
+    }
+
+    .track-content { min-width: 0; }
+
+    .track-title {
+      margin-bottom: 3px;
+      color: var(--ink);
+      font-size: 1.04rem;
+      font-weight: 700;
+    }
+
+    .track-description {
+      margin-bottom: 14px;
+      color: var(--muted);
+      font-size: 0.87rem;
+    }
+
+    audio {
+      width: min(100%, 560px);
+      height: 42px;
+      display: block;
+    }
+
+    @keyframes arrive {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 560px) {
+      .action-bar { width: min(100% - 32px, 1000px); padding-top: 14px; }
+      .upload-status { width: min(100% - 32px, 1000px); }
+      main { width: min(100% - 32px, 1000px); padding-top: 48px; }
+      .track { grid-template-columns: 30px minmax(0, 1fr); gap: 12px; }
+      .section-heading { align-items: start; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <img class="topbar-image" src="fanfarenzug-banner.png" alt="Fanfarenzug Neustrelitz">
+  </header>
+
+  <nav class="action-bar" aria-label="Audioaktionen">
+    <button class="action-control action-secondary" id="show-recordings" type="button">Vorhandene Audios</button>
+    <button class="action-control action-primary" id="upload-button" type="button">Audios hochladen</button>
+    <input id="audio-upload" type="file" accept="audio/*" multiple hidden>
+  </nav>
+  <p class="upload-status" id="upload-status" role="status" aria-live="polite" hidden></p>
+
+  <main>
+    <div class="intro">
+      <p class="intro-copy">Hier findest du unsere Aufnahmen.</p>
+    </div>
+
+    <section id="recordings" aria-labelledby="recordings-title">
+      <div class="section-heading">
+        <h2 id="recordings-title">Aufnahmen</h2>
+        <span class="section-count" id="track-count" aria-live="polite">0 Titel</span>
+      </div>
+
+      <div class="track-list">
+        <p class="empty-state" id="empty-state">Noch keine Audios hinzugefügt.</p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const uploadButton = document.querySelector("#upload-button");
+    const uploadInput = document.querySelector("#audio-upload");
+    const recordings = document.querySelector("#recordings");
+    const trackList = document.querySelector(".track-list");
+    const trackCount = document.querySelector("#track-count");
+    const emptyState = document.querySelector("#empty-state");
+    const uploadStatus = document.querySelector("#upload-status");
+
+    function showStatus(message) {
+      uploadStatus.textContent = message;
+      uploadStatus.hidden = false;
+    }
+
+    function createTrack(recording, index) {
+      const track = document.createElement("article");
+      track.className = "track";
+
+      const number = document.createElement("span");
+      number.className = "track-number";
+      number.setAttribute("aria-hidden", "true");
+      number.textContent = String(index + 1).padStart(2, "0");
+
+      const content = document.createElement("div");
+      content.className = "track-content";
+
+      const title = document.createElement("h3");
+      title.className = "track-title";
+      title.textContent = recording.title;
+
+      const description = document.createElement("p");
+      description.className = "track-description";
+      description.textContent = "Dauerhaft gespeichert";
+
+      const player = document.createElement("audio");
+      player.controls = true;
+      player.preload = "metadata";
+      player.src = recording.url;
+      player.setAttribute("aria-label", `${recording.title} abspielen`);
+
+      content.append(title, description, player);
+      track.append(number, content);
+      return track;
+    }
+
+    async function loadRecordings() {
+      const response = await fetch("/api/audio", { cache: "no-store" });
+      if (!response.ok) throw new Error("Audios konnten nicht geladen werden.");
+
+      const savedRecordings = await response.json();
+      trackList.replaceChildren();
+      trackCount.textContent = `${savedRecordings.length} Titel`;
+
+      if (savedRecordings.length === 0) {
+        trackList.append(emptyState);
+        return;
+      }
+
+      savedRecordings.forEach((recording, index) => {
+        trackList.append(createTrack(recording, index));
+      });
+    }
+
+    document.querySelector("#show-recordings").addEventListener("click", () => {
+      recordings.scrollIntoView({ behavior: "smooth" });
+    });
+
+    uploadButton.addEventListener("click", () => uploadInput.click());
+
+    uploadInput.addEventListener("change", async (event) => {
+      const files = Array.from(event.target.files);
+      if (files.length === 0) return;
+
+      const formData = new FormData();
+      files.forEach((file) => formData.append("audio", file));
+      uploadButton.disabled = true;
+      showStatus("Audios werden gespeichert …");
+
+      try {
+        const response = await fetch("/api/audio", { method: "POST", body: formData });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || "Upload fehlgeschlagen.");
+
+        await loadRecordings();
+        const message = result.uploaded === 1
+          ? "Eine Audiodatei wurde dauerhaft gespeichert."
+          : `${result.uploaded} Audiodateien wurden dauerhaft gespeichert.`;
+        showStatus(message);
+      } catch (error) {
+        showStatus(error.message || "Upload fehlgeschlagen. Bitte den Server prüfen.");
+      } finally {
+        uploadButton.disabled = false;
+        event.target.value = "";
+      }
+    });
+
+    loadRecordings().catch(() => {
+      showStatus("Audios konnten nicht geladen werden. Bitte den Server prüfen.");
+    });
+  </script>
+</body>
+</html>
