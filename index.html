@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#183c32">
   <meta name="description" content="Musik und Aufnahmen des Fanfarenzugs Neustrelitz.">
-  <title>Musik | Fanfarenzug Neustrelitz</title>
+  <title>Ausbilderhilfe - Titel FzNz</title>
   <style>
     :root {
       color-scheme: light;
@@ -52,7 +52,7 @@
       flex-wrap: wrap;
       gap: 10px;
       width: min(100% - 40px, 1000px);
-      margin: 0 auto;
+      margin: 0 20px;
       padding-top: 18px;
     }
 
@@ -87,17 +87,97 @@
       opacity: 0.65;
     }
 
-    .upload-status {
-      width: min(100% - 40px, 1000px);
-      margin: 8px auto 0;
+    .upload-dialog {
+      width: min(100% - 32px, 620px);
+      max-height: min(85vh, 760px);
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--ink);
+    }
+
+    .upload-dialog::backdrop { background: rgb(16 43 37 / 65%); }
+    .upload-dialog h2 { margin-bottom: 8px; }
+
+    .upload-dialog-intro {
+      margin-bottom: 18px;
       color: var(--muted);
+    }
+
+    .upload-file-list {
+      display: grid;
+      gap: 16px;
+      max-height: 48vh;
+      overflow-y: auto;
+      padding: 2px;
+    }
+
+    .upload-file {
+      display: grid;
+      gap: 8px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+    }
+
+    .upload-file-name {
+      margin: 0 0 2px;
+      overflow-wrap: anywhere;
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+
+    .upload-file-fields {
+      display: grid;
+      grid-template-columns: minmax(72px, 0.18fr) minmax(0, 0.82fr) minmax(0, 1fr);
+      align-items: end;
+      gap: 10px;
+    }
+
+    .upload-field {
+      display: grid;
+      gap: 4px;
       font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .upload-field input,
+    .upload-field select {
+      width: 100%;
+      min-height: 38px;
+      padding: 7px 9px;
+      border: 1px solid #aeb8b0;
+      border-radius: 4px;
+      font: inherit;
+      font-weight: 400;
+    }
+
+    .upload-dialog-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .delete-confirmation {
+      width: min(100% - 32px, 420px);
+    }
+
+    .delete-confirmation p {
+      margin-bottom: 0;
+      color: var(--muted);
+      overflow-wrap: anywhere;
+    }
+
+    .delete-confirmation .action-danger {
+      border-color: #842d27;
+      background: #842d27;
     }
 
     main {
       width: min(100% - 40px, 1000px);
-      margin: 0 auto;
-      padding: 42px 0 80px;
+      margin: 0 20px;
+      padding: 18px 0 80px;
     }
 
     .intro {
@@ -119,7 +199,7 @@
       align-items: baseline;
       justify-content: space-between;
       gap: 16px;
-      margin: 30px 0 14px;
+      margin: 0 0 14px;
     }
 
     h2 {
@@ -147,11 +227,11 @@
     }
 
     .track {
-      display: grid;
-      grid-template-columns: 44px minmax(0, 1fr);
-      gap: 18px;
-      align-items: start;
-      padding: 22px 4px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 14px;
+      align-items: center;
+      padding: 12px 4px;
       border-bottom: 1px solid var(--line);
       animation: arrive 500ms both;
     }
@@ -160,31 +240,58 @@
     .track:nth-child(3) { animation-delay: 160ms; }
 
     .track-number {
-      padding-top: 1px;
+      flex: 0 0 34px;
       color: #738178;
       font-family: Georgia, "Times New Roman", serif;
       font-size: 1.15rem;
+      text-align: right;
     }
 
-    .track-content { min-width: 0; }
-
     .track-title {
-      margin-bottom: 3px;
+      flex: 0 1 auto;
+      max-width: 280px;
+      margin: 0;
       color: var(--ink);
       font-size: 1.04rem;
       font-weight: 700;
+      overflow-wrap: anywhere;
     }
 
-    .track-description {
-      margin-bottom: 14px;
+    .track-register {
+      flex: 0 1 155px;
       color: var(--muted);
-      font-size: 0.87rem;
+      font-size: 0.85rem;
     }
 
     audio {
-      width: min(100%, 560px);
+      flex: 0 1 420px;
+      width: auto;
+      min-width: min(100%, 220px);
       height: 42px;
       display: block;
+    }
+
+    .delete-recording {
+      display: grid;
+      width: 34px;
+      height: 34px;
+      flex: 0 0 auto;
+      margin: 0;
+      padding: 0;
+      place-items: center;
+      border: 1px solid #9a3e36;
+      border-radius: 50%;
+      background: #fff;
+      color: #842d27;
+      font: inherit;
+      font-size: 1.25rem;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .delete-recording:focus-visible {
+      outline: 3px solid var(--gold);
+      outline-offset: 2px;
     }
 
     @keyframes arrive {
@@ -193,10 +300,13 @@
     }
 
     @media (max-width: 560px) {
-      .action-bar { width: min(100% - 32px, 1000px); padding-top: 14px; }
-      .upload-status { width: min(100% - 32px, 1000px); }
-      main { width: min(100% - 32px, 1000px); padding-top: 48px; }
-      .track { grid-template-columns: 30px minmax(0, 1fr); gap: 12px; }
+      .action-bar { width: min(100% - 32px, 1000px); margin: 0 16px; padding-top: 14px; }
+      main { width: min(100% - 32px, 1000px); margin: 0 16px; padding-top: 14px; }
+      .track { gap: 8px 10px; }
+      .track-number { flex-basis: 26px; }
+      .track-title { max-width: 100%; }
+      .track-register { flex-basis: 120px; }
+      audio { flex: 1 1 280px; }
       .section-heading { align-items: start; }
     }
 
@@ -215,17 +325,49 @@
   </header>
 
   <nav class="action-bar" aria-label="Audioaktionen">
-    <button class="action-control action-secondary" id="show-recordings" type="button">Vorhandene Audios</button>
-    <button class="action-control action-primary" id="upload-button" type="button">Audios hochladen</button>
-    <input id="audio-upload" type="file" accept="audio/*" multiple hidden>
+    <button class="action-control action-primary" id="upload-button" type="button">Aufnahmen verwalten</button>
+    <button class="action-control action-secondary" id="logout-button" type="button" hidden>Abmelden</button>
+    <input id="audio-upload" type="file" accept="audio/*,video/*" multiple hidden>
   </nav>
-  <p class="upload-status" id="upload-status" role="status" aria-live="polite" hidden></p>
+  <dialog class="upload-dialog" id="login-dialog" aria-labelledby="login-dialog-title">
+    <form id="login-form">
+      <h2 id="login-dialog-title">Ausbilder Anmeldung</h2>
+      <p class="upload-dialog-intro">Gib das Passwort ein, um eine Aufnahme hochzuladen oder zu löschen.</p>
+      <label class="upload-field" for="login-password">Passwort
+        <input id="login-password" name="password" type="password" autocomplete="current-password" required>
+      </label>
+      <p id="login-status" role="status" aria-live="polite"></p>
+      <div class="upload-dialog-actions">
+        <button class="action-control action-secondary" id="cancel-login" type="button">Abbrechen</button>
+        <button class="action-control action-primary" id="submit-login" type="submit">Anmelden</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog class="upload-dialog" id="upload-dialog" aria-labelledby="upload-dialog-title">
+    <form id="upload-form">
+      <h2 id="upload-dialog-title">Aufnahmen benennen</h2>
+      <p class="upload-dialog-intro">Bitte geben Sie gegebenfalls die Nummer und den Namen des Titels an.</p>
+      <div class="upload-file-list" id="upload-file-list"></div>
+      <div class="upload-dialog-actions">
+        <button class="action-control action-secondary" id="cancel-upload" type="button">Abbrechen</button>
+        <button class="action-control action-primary" id="submit-upload" type="submit">Hochladen</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog class="upload-dialog delete-confirmation" id="delete-dialog" aria-labelledby="delete-dialog-title">
+    <form id="delete-form">
+      <h2 id="delete-dialog-title">Aufnahme löschen?</h2>
+      <p id="delete-message"></p>
+      <div class="upload-dialog-actions">
+        <button class="action-control action-secondary" id="cancel-delete" type="button">Abbrechen</button>
+        <button class="action-control action-primary action-danger" id="confirm-delete" type="submit">Löschen</button>
+      </div>
+    </form>
+  </dialog>
 
   <main>
-    <div class="intro">
-      <p class="intro-copy">Hier findest du unsere Aufnahmen.</p>
-    </div>
-
     <section id="recordings" aria-labelledby="recordings-title">
       <div class="section-heading">
         <h2 id="recordings-title">Aufnahmen</h2>
@@ -241,36 +383,48 @@
   <script>
     const uploadButton = document.querySelector("#upload-button");
     const uploadInput = document.querySelector("#audio-upload");
-    const recordings = document.querySelector("#recordings");
+    const loginDialog = document.querySelector("#login-dialog");
+    const loginForm = document.querySelector("#login-form");
+    const loginPassword = document.querySelector("#login-password");
+    const loginStatus = document.querySelector("#login-status");
+    const loginSubmitButton = document.querySelector("#submit-login");
+    const uploadDialog = document.querySelector("#upload-dialog");
+    const uploadForm = document.querySelector("#upload-form");
+    const uploadFileList = document.querySelector("#upload-file-list");
+    const submitUploadButton = document.querySelector("#submit-upload");
+    const deleteDialog = document.querySelector("#delete-dialog");
+    const deleteForm = document.querySelector("#delete-form");
+    const deleteMessage = document.querySelector("#delete-message");
+    const confirmDeleteButton = document.querySelector("#confirm-delete");
+    const logoutButton = document.querySelector("#logout-button");
     const trackList = document.querySelector(".track-list");
     const trackCount = document.querySelector("#track-count");
     const emptyState = document.querySelector("#empty-state");
-    const uploadStatus = document.querySelector("#upload-status");
+    let isAuthenticated = false;
+    let loginFollowUp = "select-file";
+    let pendingDeletion = null;
+    let savedRecordings = null;
 
-    function showStatus(message) {
-      uploadStatus.textContent = message;
-      uploadStatus.hidden = false;
-    }
-
-    function createTrack(recording, index) {
+    function createTrack(recording) {
       const track = document.createElement("article");
       track.className = "track";
 
       const number = document.createElement("span");
       number.className = "track-number";
       number.setAttribute("aria-hidden", "true");
-      number.textContent = String(index + 1).padStart(2, "0");
+      const trackNumber = Number(recording.number);
+      number.textContent = recording.number == null || !Number.isInteger(trackNumber) || trackNumber < 1
+        ? ""
+        : String(trackNumber).padStart(2, "0");
 
-      const content = document.createElement("div");
-      content.className = "track-content";
-
+      const displayTitle = recording.title;
       const title = document.createElement("h3");
       title.className = "track-title";
       title.textContent = recording.title;
 
-      const description = document.createElement("p");
-      description.className = "track-description";
-      description.textContent = "Dauerhaft gespeichert";
+      const register = document.createElement("span");
+      register.className = "track-register";
+      register.textContent = recording.register || "";
 
       const player = document.createElement("audio");
       player.controls = true;
@@ -278,64 +432,287 @@
       player.src = recording.url;
       player.setAttribute("aria-label", `${recording.title} abspielen`);
 
-      content.append(title, description, player);
-      track.append(number, content);
+      track.append(number, title, register, player);
+      if (isAuthenticated) {
+        const deleteButton = document.createElement("button");
+        deleteButton.className = "delete-recording";
+        deleteButton.type = "button";
+        deleteButton.textContent = "×";
+        deleteButton.title = "Löschen";
+        deleteButton.setAttribute("aria-label", `${displayTitle} löschen`);
+        deleteButton.addEventListener("click", () => {
+          pendingDeletion = { recording, deleteButton };
+          deleteMessage.textContent = `Möchtest du „${displayTitle}“ wirklich löschen?`;
+          deleteDialog.showModal();
+          document.querySelector("#cancel-delete").focus();
+        });
+        track.append(deleteButton);
+      }
       return track;
+    }
+
+    function updateAuthenticationControls() {
+      uploadButton.textContent = isAuthenticated
+        ? "Aufnahme hinzufügen"
+        : "Aufnahmen verwalten";
+      logoutButton.hidden = !isAuthenticated;
+      if (savedRecordings !== null) renderRecordings(savedRecordings);
+    }
+
+    async function refreshAuthentication() {
+      const response = await fetch("/api/session", { cache: "no-store" });
+      if (!response.ok) throw new Error("Anmeldestatus konnte nicht geprüft werden.");
+      const result = await response.json();
+      isAuthenticated = result.authenticated === true;
+      updateAuthenticationControls();
+    }
+
+    function renderRecordings(recordings) {
+      trackList.replaceChildren();
+      trackCount.textContent = `${recordings.length} Titel`;
+
+      if (recordings.length === 0) {
+        trackList.append(emptyState);
+        return;
+      }
+
+      recordings.forEach((recording) => {
+        trackList.append(createTrack(recording));
+      });
     }
 
     async function loadRecordings() {
       const response = await fetch("/api/audio", { cache: "no-store" });
       if (!response.ok) throw new Error("Audios konnten nicht geladen werden.");
 
-      const savedRecordings = await response.json();
-      trackList.replaceChildren();
-      trackCount.textContent = `${savedRecordings.length} Titel`;
-
-      if (savedRecordings.length === 0) {
-        trackList.append(emptyState);
-        return;
-      }
-
-      savedRecordings.forEach((recording, index) => {
-        trackList.append(createTrack(recording, index));
-      });
+      savedRecordings = await response.json();
+      renderRecordings(savedRecordings);
     }
 
-    document.querySelector("#show-recordings").addEventListener("click", () => {
-      recordings.scrollIntoView({ behavior: "smooth" });
+    function showSelectedFiles(files) {
+      uploadFileList.replaceChildren();
+      files.forEach((file, index) => {
+        const row = document.createElement("section");
+        row.className = "upload-file";
+
+        const filename = document.createElement("p");
+        filename.className = "upload-file-name";
+        filename.textContent = file.name;
+
+        const titleLabel = document.createElement("label");
+        titleLabel.className = "upload-field";
+        titleLabel.textContent = "Name";
+        const titleInput = document.createElement("input");
+        titleInput.name = `title-${index}`;
+        titleInput.type = "text";
+        titleInput.value = file.name.replace(/\.[^.]+$/, "");
+        titleInput.maxLength = 200;
+        titleInput.required = true;
+        titleLabel.append(titleInput);
+
+        const numberLabel = document.createElement("label");
+        numberLabel.className = "upload-field";
+        numberLabel.textContent = "Nummer";
+        const numberInput = document.createElement("input");
+        numberInput.name = `number-${index}`;
+        numberInput.type = "number";
+        numberInput.min = "1";
+        numberInput.max = "30";
+        numberInput.step = "1";
+        numberInput.inputMode = "numeric";
+        numberInput.addEventListener("input", () => {
+          if (numberInput.value !== "" && Number(numberInput.value) > 30) {
+            numberInput.value = "30";
+          }
+        });
+        numberLabel.append(numberInput);
+
+        const registerLabel = document.createElement("label");
+        registerLabel.className = "upload-field";
+        registerLabel.textContent = "Register";
+        const registerSelect = document.createElement("select");
+        registerSelect.name = `register-${index}`;
+        registerSelect.required = true;
+        const placeholder = document.createElement("option");
+        placeholder.value = "";
+        placeholder.textContent = "Bitte wählen";
+        placeholder.disabled = true;
+        placeholder.selected = true;
+        registerSelect.append(placeholder);
+        [
+          "Blaeser 1. Stimme",
+          "Blaeser 2. Stimme",
+          "Blaeser 3. Stimme",
+          "Blaeser 4. Stimme",
+          "Trommel",
+          "Hochtrommel",
+        ].forEach((value) => {
+          const option = document.createElement("option");
+          option.value = value;
+          option.textContent = value;
+          registerSelect.append(option);
+        });
+        registerLabel.append(registerSelect);
+
+        const fields = document.createElement("div");
+        fields.className = "upload-file-fields";
+        fields.append(numberLabel, titleLabel, registerLabel);
+        row.append(filename, fields);
+        uploadFileList.append(row);
+      });
+      uploadDialog.showModal();
+      uploadFileList.querySelector("input").focus();
+    }
+
+    uploadButton.addEventListener("click", () => {
+      if (isAuthenticated) {
+        uploadInput.click();
+      } else {
+        loginFollowUp = "select-file";
+        loginPassword.value = "";
+        loginStatus.textContent = "";
+        loginDialog.showModal();
+        loginPassword.focus();
+      }
+    });
+    document.querySelector("#cancel-login").addEventListener("click", () => {
+      loginDialog.close();
+    });
+    document.querySelector("#cancel-delete").addEventListener("click", () => {
+      deleteDialog.close();
+      pendingDeletion = null;
+    });
+    deleteForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (!pendingDeletion) return;
+
+      const { recording, deleteButton } = pendingDeletion;
+      confirmDeleteButton.disabled = true;
+      deleteButton.disabled = true;
+      try {
+        const response = await fetch(`/api/audio/${recording.id}`, { method: "DELETE" });
+        const result = await response.json();
+        if (response.status === 401) {
+          isAuthenticated = false;
+          updateAuthenticationControls();
+          loginFollowUp = "refresh";
+          loginPassword.value = "";
+          loginStatus.textContent = "";
+          deleteDialog.close();
+          loginDialog.showModal();
+          loginPassword.focus();
+          return;
+        }
+        if (!response.ok) throw new Error(result.error || "Die Aufnahme konnte nicht gelöscht werden.");
+        deleteDialog.close();
+        pendingDeletion = null;
+        await loadRecordings();
+      } catch (error) {
+        window.alert(error.message || "Die Aufnahme konnte nicht gelöscht werden.");
+        deleteButton.disabled = false;
+      } finally {
+        confirmDeleteButton.disabled = false;
+      }
+    });
+    loginForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      loginSubmitButton.disabled = true;
+      loginStatus.textContent = "Anmeldung wird geprüft …";
+      try {
+        const response = await fetch("/api/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ password: loginPassword.value }),
+        });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || "Anmeldung fehlgeschlagen.");
+
+        isAuthenticated = true;
+        updateAuthenticationControls();
+        loginDialog.close();
+        if (loginFollowUp === "retry-upload") {
+          uploadForm.requestSubmit();
+        } else if (loginFollowUp === "refresh") {
+          await loadRecordings();
+        } else {
+          uploadInput.click();
+        }
+      } catch (error) {
+        loginStatus.textContent = error.message || "Anmeldung fehlgeschlagen.";
+        loginPassword.select();
+      } finally {
+        loginSubmitButton.disabled = false;
+      }
+    });
+    logoutButton.addEventListener("click", async () => {
+      try {
+        const response = await fetch("/api/logout", { method: "POST" });
+        if (!response.ok) throw new Error("Abmelden fehlgeschlagen.");
+        window.location.reload();
+      } catch (error) {
+        window.alert(error.message || "Abmelden fehlgeschlagen.");
+      }
+    });
+    document.querySelector("#cancel-upload").addEventListener("click", () => {
+      uploadDialog.close();
+      uploadInput.value = "";
+    });
+    uploadDialog.addEventListener("close", () => {
+      if (!submitUploadButton.disabled) uploadInput.value = "";
     });
 
-    uploadButton.addEventListener("click", () => uploadInput.click());
-
-    uploadInput.addEventListener("change", async (event) => {
+    uploadInput.addEventListener("change", (event) => {
       const files = Array.from(event.target.files);
-      if (files.length === 0) return;
+      if (files.length > 0) showSelectedFiles(files);
+    });
 
+    uploadForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const files = Array.from(uploadInput.files);
+      const metadata = files.map((_, index) => ({
+        title: uploadForm.elements.namedItem(`title-${index}`).value,
+        number: uploadForm.elements.namedItem(`number-${index}`).value === ""
+          ? null
+          : Number(uploadForm.elements.namedItem(`number-${index}`).value),
+        register: uploadForm.elements.namedItem(`register-${index}`).value.trim().normalize("NFC"),
+      }));
       const formData = new FormData();
       files.forEach((file) => formData.append("audio", file));
+      formData.append("metadata", JSON.stringify(metadata));
       uploadButton.disabled = true;
-      showStatus("Audios werden gespeichert …");
+      submitUploadButton.disabled = true;
 
       try {
         const response = await fetch("/api/audio", { method: "POST", body: formData });
         const result = await response.json();
+        if (response.status === 401) {
+          isAuthenticated = false;
+          updateAuthenticationControls();
+          loginFollowUp = "retry-upload";
+          loginPassword.value = "";
+          loginStatus.textContent = "";
+          loginDialog.showModal();
+          loginPassword.focus();
+          return;
+        }
         if (!response.ok) throw new Error(result.error || "Upload fehlgeschlagen.");
 
         await loadRecordings();
-        const message = result.uploaded === 1
-          ? "Eine Audiodatei wurde dauerhaft gespeichert."
-          : `${result.uploaded} Audiodateien wurden dauerhaft gespeichert.`;
-        showStatus(message);
+        uploadDialog.close();
+        uploadInput.value = "";
       } catch (error) {
-        showStatus(error.message || "Upload fehlgeschlagen. Bitte den Server prüfen.");
+        window.alert(error.message || "Upload fehlgeschlagen. Bitte den Server prüfen.");
       } finally {
         uploadButton.disabled = false;
-        event.target.value = "";
+        submitUploadButton.disabled = false;
       }
     });
 
-    loadRecordings().catch(() => {
-      showStatus("Audios konnten nicht geladen werden. Bitte den Server prüfen.");
+    (async () => {
+      await refreshAuthentication();
+      await loadRecordings();
+    })().catch(() => {
+      window.alert("Audios konnten nicht geladen werden. Bitte den Server prüfen.");
     });
   </script>
 </body>

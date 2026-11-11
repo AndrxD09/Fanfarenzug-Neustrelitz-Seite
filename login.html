@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#183c32">
+  <title>Ausbilderhilfe - Titel FzNz</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --forest: #183c32;
+      --forest-deep: #102b25;
+      --gold: #d3a94f;
+      --ink: #202a25;
+      --muted: #64716a;
+      --line: #d9ded6;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      display: grid;
+      min-height: 100vh;
+      margin: 0;
+      place-items: center;
+      padding: 20px;
+      background: #fff;
+      color: var(--ink);
+      font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+    }
+
+    main {
+      width: min(100%, 420px);
+      padding: 28px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      color: var(--forest-deep);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.65rem;
+      font-weight: 400;
+    }
+
+    p { color: var(--muted); }
+
+    label {
+      display: grid;
+      gap: 6px;
+      margin: 22px 0 16px;
+      font-weight: 700;
+    }
+
+    input, button {
+      min-height: 44px;
+      padding: 9px 12px;
+      border: 1px solid #aeb8b0;
+      border-radius: 4px;
+      font: inherit;
+    }
+
+    button {
+      width: 100%;
+      border-color: var(--forest);
+      background: var(--forest);
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button:disabled { cursor: wait; opacity: 0.65; }
+
+    :focus-visible {
+      outline: 3px solid var(--gold);
+      outline-offset: 2px;
+    }
+
+    #login-status { margin-bottom: 0; }
+    #login-status:empty { display: none; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Ausbilder Anmeldung</h1>
+    <p>Gib das Passwort ein, um Aufnahmen hochzuladen oder zu löschen.</p>
+    <form id="login-form">
+      <label for="password">Passwort
+        <input id="password" name="password" type="password" autocomplete="current-password" required autofocus>
+      </label>
+      <button id="submit-login" type="submit">Anmelden</button>
+      <p id="login-status" role="status" aria-live="polite"></p>
+    </form>
+  </main>
+  <script>
+    const form = document.querySelector("#login-form");
+    const passwordInput = document.querySelector("#password");
+    const submitButton = document.querySelector("#submit-login");
+    const status = document.querySelector("#login-status");
+    const requestedPath = new URLSearchParams(window.location.search).get("next") || "/";
+    const returnPath = requestedPath.startsWith("/") && !requestedPath.startsWith("//")
+      ? requestedPath
+      : "/";
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      submitButton.disabled = true;
+      status.textContent = "Anmeldung wird geprüft …";
+      try {
+        const response = await fetch("/api/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ password: passwordInput.value, next: returnPath }),
+        });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || "Anmeldung fehlgeschlagen.");
+        window.location.replace(result.redirect);
+      } catch (error) {
+        status.textContent = error.message || "Anmeldung fehlgeschlagen.";
+        passwordInput.select();
+      } finally {
+        submitButton.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
