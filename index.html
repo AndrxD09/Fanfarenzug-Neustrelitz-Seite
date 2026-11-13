@@ -11,6 +11,7 @@
       color-scheme: light;
       --forest: #183c32;
       --forest-deep: #102b25;
+      --button-color: #2f3647;
       --gold: #d3a94f;
       --paper: #fff;
       --ink: #202a25;
@@ -47,24 +48,67 @@
       border-radius: 8px;
     }
 
+    .page-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1000px) minmax(180px, 1fr);
+      align-items: start;
+      gap: 20px;
+      width: calc(100% - 40px);
+      margin: 0 20px;
+    }
+
     .action-bar {
       display: flex;
       flex-wrap: wrap;
+      align-items: flex-start;
       gap: 10px;
-      width: min(100% - 40px, 1000px);
-      margin: 0 20px;
+      width: 100%;
       padding-top: 18px;
+    }
+
+    .register-sidebar {
+      align-self: stretch;
+    }
+
+    .register-navigation {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 6px;
+      position: sticky;
+      top: 18px;
+      width: 180px;
+      margin-left: auto;
+      margin-top: 18px;
+    }
+
+    .register-button {
+      padding: 7px 9px;
+      font-size: 0.8rem;
+    }
+
+    .register-button[aria-pressed="true"] {
+      background: var(--button-color);
+      color: #fff;
     }
 
     .action-control {
       min-height: 42px;
       padding: 8px 14px;
-      border: 1px solid var(--forest);
+      border: 1px solid var(--button-color);
       border-radius: 4px;
       font: inherit;
       font-size: 0.9rem;
       font-weight: 700;
       cursor: pointer;
+    }
+
+    button {
+      transition: transform 140ms ease;
+    }
+
+    button:hover:not(:disabled) {
+      transform: scale(1.04);
     }
 
     .action-control:focus-visible {
@@ -73,13 +117,27 @@
     }
 
     .action-secondary {
-      background: #fff;
-      color: var(--forest);
+      background: var(--button-color);
+      color: #fff;
     }
 
     .action-primary {
-      background: var(--forest);
+      background: var(--button-color);
       color: #fff;
+    }
+
+    #logout-button {
+      border-color: var(--button-color);
+      background: #fff;
+      color: var(--button-color);
+    }
+
+    #cancel-login,
+    #cancel-upload,
+    #cancel-delete {
+      border-color: var(--button-color);
+      background: #fff;
+      color: var(--button-color);
     }
 
     .action-control:disabled {
@@ -175,8 +233,7 @@
     }
 
     main {
-      width: min(100% - 40px, 1000px);
-      margin: 0 20px;
+      width: 100%;
       padding: 18px 0 80px;
     }
 
@@ -257,12 +314,6 @@
       overflow-wrap: anywhere;
     }
 
-    .track-register {
-      flex: 0 1 155px;
-      color: var(--muted);
-      font-size: 0.85rem;
-    }
-
     audio {
       flex: 0 1 420px;
       width: auto;
@@ -300,12 +351,14 @@
     }
 
     @media (max-width: 560px) {
-      .action-bar { width: min(100% - 32px, 1000px); margin: 0 16px; padding-top: 14px; }
-      main { width: min(100% - 32px, 1000px); margin: 0 16px; padding-top: 14px; }
+      .page-layout { grid-template-columns: minmax(0, 1fr) 140px; gap: 8px; width: calc(100% - 32px); margin: 0 16px; }
+      .action-bar { padding-top: 14px; }
+      .register-navigation { width: 140px; margin-top: 14px; }
+      .register-button { padding: 7px 5px; font-size: 0.7rem; }
+      main { padding-top: 14px; }
       .track { gap: 8px 10px; }
       .track-number { flex-basis: 26px; }
       .track-title { max-width: 100%; }
-      .track-register { flex-basis: 120px; }
       audio { flex: 1 1 280px; }
       .section-heading { align-items: start; }
     }
@@ -315,6 +368,7 @@
         scroll-behavior: auto !important;
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
       }
     }
   </style>
@@ -324,11 +378,13 @@
     <img class="topbar-image" src="fanfarenzug-banner.png" alt="Fanfarenzug Neustrelitz">
   </header>
 
-  <nav class="action-bar" aria-label="Audioaktionen">
-    <button class="action-control action-primary" id="upload-button" type="button">Aufnahmen verwalten</button>
-    <button class="action-control action-secondary" id="logout-button" type="button" hidden>Abmelden</button>
-    <input id="audio-upload" type="file" accept="audio/*,video/*" multiple hidden>
-  </nav>
+  <div class="page-layout">
+    <div>
+      <nav class="action-bar" aria-label="Audioaktionen">
+        <button class="action-control action-primary" id="upload-button" type="button">Aufnahmen verwalten</button>
+        <button class="action-control action-secondary" id="logout-button" type="button" hidden>Abmelden</button>
+        <input id="audio-upload" type="file" accept="audio/*,video/*" multiple hidden>
+      </nav>
   <dialog class="upload-dialog" id="login-dialog" aria-labelledby="login-dialog-title">
     <form id="login-form">
       <h2 id="login-dialog-title">Ausbilder Anmeldung</h2>
@@ -379,6 +435,18 @@
       </div>
     </section>
   </main>
+    </div>
+    <aside class="register-sidebar" aria-label="Register-Navigation">
+      <div class="register-navigation" role="group" aria-label="Register">
+        <button class="action-control action-secondary register-button" type="button" data-register="Blaeser 1. Stimme" aria-pressed="true">Bläser 1. Stimme</button>
+        <button class="action-control action-secondary register-button" type="button" data-register="Blaeser 2. Stimme" aria-pressed="false">Bläser 2. Stimme</button>
+        <button class="action-control action-secondary register-button" type="button" data-register="Blaeser 3. Stimme" aria-pressed="false">Bläser 3. Stimme</button>
+        <button class="action-control action-secondary register-button" type="button" data-register="Blaeser 4. Stimme" aria-pressed="false">Bläser 4. Stimme</button>
+        <button class="action-control action-secondary register-button" type="button" data-register="Trommel" aria-pressed="false">Trommel</button>
+        <button class="action-control action-secondary register-button" type="button" data-register="Hochtrommel" aria-pressed="false">Hochtrommel</button>
+      </div>
+    </aside>
+  </div>
 
   <script>
     const uploadButton = document.querySelector("#upload-button");
@@ -400,6 +468,9 @@
     const trackList = document.querySelector(".track-list");
     const trackCount = document.querySelector("#track-count");
     const emptyState = document.querySelector("#empty-state");
+    const recordingsTitle = document.querySelector("#recordings-title");
+    const registerButtons = Array.from(document.querySelectorAll(".register-button"));
+    let activeRegister = "Blaeser 1. Stimme";
     let isAuthenticated = false;
     let loginFollowUp = "select-file";
     let pendingDeletion = null;
@@ -422,17 +493,18 @@
       title.className = "track-title";
       title.textContent = recording.title;
 
-      const register = document.createElement("span");
-      register.className = "track-register";
-      register.textContent = recording.register || "";
-
       const player = document.createElement("audio");
       player.controls = true;
       player.preload = "metadata";
       player.src = recording.url;
       player.setAttribute("aria-label", `${recording.title} abspielen`);
+      player.addEventListener("play", () => {
+        document.querySelectorAll("audio").forEach((otherPlayer) => {
+          if (otherPlayer !== player) otherPlayer.pause();
+        });
+      });
 
-      track.append(number, title, register, player);
+      track.append(number, title, player);
       if (isAuthenticated) {
         const deleteButton = document.createElement("button");
         deleteButton.className = "delete-recording";
@@ -468,18 +540,32 @@
     }
 
     function renderRecordings(recordings) {
+      const registerRecordings = recordings.filter((recording) => recording.register === activeRegister);
+      const registerLabel = activeRegister.replace("Blaeser", "Bläser");
       trackList.replaceChildren();
-      trackCount.textContent = `${recordings.length} Titel`;
+      recordingsTitle.textContent = registerLabel;
+      trackCount.textContent = `${registerRecordings.length} Titel`;
 
-      if (recordings.length === 0) {
+      if (registerRecordings.length === 0) {
+        emptyState.textContent = `Noch keine Audios für ${registerLabel} hinzugefügt.`;
         trackList.append(emptyState);
         return;
       }
 
-      recordings.forEach((recording) => {
+      registerRecordings.forEach((recording) => {
         trackList.append(createTrack(recording));
       });
     }
+
+    registerButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        activeRegister = button.dataset.register;
+        registerButtons.forEach((registerButton) => {
+          registerButton.setAttribute("aria-pressed", String(registerButton === button));
+        });
+        if (savedRecordings !== null) renderRecordings(savedRecordings);
+      });
+    });
 
     async function loadRecordings() {
       const response = await fetch("/api/audio", { cache: "no-store" });
@@ -549,7 +635,7 @@
         ].forEach((value) => {
           const option = document.createElement("option");
           option.value = value;
-          option.textContent = value;
+          option.textContent = value.replace("Blaeser", "Bläser");
           registerSelect.append(option);
         });
         registerLabel.append(registerSelect);
