@@ -15,7 +15,7 @@ from email.policy import default
 from http.cookies import CookieError, SimpleCookie
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from urllib.parse import urlsplit
+from urllib.parse import quote, urlsplit
 
 
 def load_local_environment():
@@ -126,6 +126,34 @@ def extract_audio(content, extension):
         return destination.read_bytes()
 
 
+def convert_video(content, extension):
+    with tempfile.TemporaryDirectory(dir=UPLOAD_DIR) as temp_dir:
+        source = Path(temp_dir) / f"video{extension}"
+        destination = Path(temp_dir) / "converted.mp4"
+        source.write_bytes(content)
+        try:
+            result = subprocess.run(
+                [
+                    "ffmpeg", "-nostdin", "-v", "error", "-i", str(source),
+                    "-map", "0:v:0", "-map", "0:a?", "-c:v", "libx264",
+                    "-preset", "medium", "-crf", "23", "-c:a", "aac",
+                    "-b:a", "128k", "-movflags", "+faststart", "-f", "mp4",
+                    "-y", str(destination),
+                ],
+                check=False,
+                capture_output=True,
+                timeout=300,
+            )
+        except FileNotFoundError as error:
+            raise RuntimeError("FFmpeg ist nicht installiert.") from error
+        except subprocess.TimeoutExpired as error:
+            raise VideoProcessingError("Die Videoverarbeitung hat zu lange gedauert.") from error
+
+        if result.returncode != 0 or not destination.is_file():
+            raise VideoProcessingError("Das Video konnte nicht in MP4 umgewandelt werden.")
+        return destination.read_bytes()
+
+
 def initialize_database():
     DATA_DIR.mkdir(exist_ok=True)
     UPLOAD_DIR.mkdir(exist_ok=True)
@@ -154,11 +182,25 @@ def initialize_database():
             connection.execute(
                 "ALTER TABLE audio ADD COLUMN register TEXT NOT NULL DEFAULT ''"
             )
+        if "is_video" not in columns:
+            connection.execute(
+                "ALTER TABLE audio ADD COLUMN is_video INTEGER NOT NULL DEFAULT 0"
+            )
 
 
 class AudioRequestHandler(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
+        self.upload_download_filename = None
         super().__init__(*args, directory=str(ROOT), **kwargs)
+
+    def end_headers(self):
+        if self.upload_download_filename:
+            self.send_header(
+                "Content-Disposition",
+                "inline; filename*=UTF-8''"
+                + quote(self.upload_download_filename, safe=""),
+            )
+        super().end_headers()
 
     def translate_path(self, path):
         requested_path = urlsplit(path).path
@@ -207,8 +249,25 @@ class AudioRequestHandler(SimpleHTTPRequestHandler):
                 del SESSIONS[key]
             return SESSIONS.get(token, 0) > now
 
+    def serve_login_page(self):
+        login_file = ROOT / "login.html"
+        try:
+            content = login_file.read_bytes()
+        except OSError:
+            return self.send_error(404, "Not Found")
+        self.send_response(200)
+        self.send_header("Content-Type", "text/html; charset=utf-8")
+        self.send_header("Content-Length", str(len(content)))
+        self.end_headers()
+        if self.command != "HEAD":
+            self.wfile.write(content)
+        return
+
     def do_GET(self):
         path = urlsplit(self.path).path
+        if path in {"/login", "/login/"}:
+            return self.serve_login_page()
+
         if path == "/api/session":
             return self.send_json(200, {"authenticated": self.is_authenticated()})
 
@@ -216,9 +275,10 @@ class AudioRequestHandler(SimpleHTTPRequestHandler):
             with sqlite3.connect(DATABASE) as connection:
                 rows = connection.execute(
                     """
-                    SELECT id, title, track_number, register, stored_name
+                    SELECT id, title, track_number, register, stored_name, is_video
                     FROM audio
                     ORDER BY
+                        is_video,
                         CASE WHEN track_number IS NULL THEN 1 ELSE 0 END,
                         track_number,
                         title COLLATE NOCASE,
@@ -232,8 +292,9 @@ class AudioRequestHandler(SimpleHTTPRequestHandler):
                     "number": track_number,
                     "register": canonical_register(register) or register,
                     "url": f"/uploads/{stored_name}",
+                    "type": "video" if is_video else "audio",
                 }
-                for recording_id, title, track_number, register, stored_name in rows
+                for recording_id, title, track_number, register, stored_name, is_video in rows
             ]
             return self.send_json(200, recordings)
 
@@ -249,10 +310,15 @@ class AudioRequestHandler(SimpleHTTPRequestHandler):
                 return self.send_json(404, {"error": "Nicht gefunden."})
             with sqlite3.connect(DATABASE) as connection:
                 recording = connection.execute(
-                    "SELECT content_type FROM audio WHERE stored_name = ?", (stored_name,)
+                    "SELECT content_type, title FROM audio WHERE stored_name = ?",
+                    (stored_name,),
                 ).fetchone()
             if not recording:
                 return self.send_json(404, {"error": "Nicht gefunden."})
+            title = recording[1].replace("\\", "/").rsplit("/", 1)[-1].strip(" .")
+            self.upload_download_filename = (
+                f"{title or 'aufnahme'}{Path(stored_name).suffix}"
+            )
             if self.headers.get("Range"):
                 return self.send_upload_range(UPLOAD_DIR / stored_name, recording[0])
 
@@ -318,6 +384,12 @@ class AudioRequestHandler(SimpleHTTPRequestHandler):
         self.send_header("Accept-Ranges", "bytes")
         self.send_header("Content-Length", "0")
         self.end_headers()
+
+    def do_HEAD(self):
+        path = urlsplit(self.path).path
+        if path in {"/login", "/login/"}:
+            return self.serve_login_page()
+        return self.do_GET()
 
     def do_POST(self):
         path = urlsplit(self.path).path
@@ -452,6 +524,13 @@ class AudioRequestHandler(SimpleHTTPRequestHandler):
 
         invalid_register_files = []
         for index, item in enumerate(metadata):
+            output_format = item.get("format", "mp3")
+            if files[index]["is_video"] and output_format not in {"mp3", "mp4"}:
+                return self.send_json(
+                    400,
+                    {"error": "Für Videodateien muss MP3 oder MP4 als Format gewählt werden."},
+                )
+            item["format"] = output_format
             register = item.get("register")
             normalized_register = (
                 canonical_register(register) if isinstance(register, str) else None
@@ -492,16 +571,24 @@ class AudioRequestHandler(SimpleHTTPRequestHandler):
                     media_type = file["media_type"]
                     is_video = file["is_video"]
                     if is_video:
-                        content = extract_audio(content, extension)
-                        extension = ".mp3"
-                        converted += 1
+                        if item["format"] == "mp3":
+                            content = extract_audio(content, extension)
+                            extension = ".mp3"
+                            media_type = "audio/mpeg"
+                            is_video = False
+                            converted += 1
+                        else:
+                            content = convert_video(content, extension)
+                            extension = ".mp4"
+                            media_type = "video/mp4"
+                            converted += 1
                     stored_name = f"{uuid.uuid4().hex}{extension}"
                     file_path = UPLOAD_DIR / stored_name
                     file_path.write_bytes(content)
                     saved_paths.append(file_path)
                     connection.execute(
-                        "INSERT INTO audio (title, track_number, register, stored_name, content_type) VALUES (?, ?, ?, ?, ?)",
-                        (title, track_number, register, stored_name, media_type),
+                        "INSERT INTO audio (title, track_number, register, stored_name, content_type, is_video) VALUES (?, ?, ?, ?, ?, ?)",
+                        (title, track_number, register, stored_name, media_type, is_video),
                     )
         except RuntimeError as error:
             for file_path in saved_paths:

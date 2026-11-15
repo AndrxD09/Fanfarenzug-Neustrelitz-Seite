@@ -14,10 +14,14 @@
       --button-color: #2f3647;
       --gold: #d3a94f;
       --paper: #fff;
+      --surface: #fff;
+      --disabled-surface: #f0f1ef;
       --ink: #202a25;
       --muted: #64716a;
       --line: #d9ded6;
       --white: #fffefa;
+      --danger: #842d27;
+      --danger-border: #9a3e36;
     }
 
     * { box-sizing: border-box; }
@@ -35,7 +39,7 @@
       align-items: center;
       justify-content: flex-start;
       padding: 8px 12px;
-      background: #fff;
+      background: var(--surface);
       border-bottom: 1px solid var(--line);
     }
 
@@ -44,7 +48,7 @@
       width: min(30vw, 320px);
       height: auto;
       padding: 8px;
-      background: #fff;
+      background: var(--surface);
       border-radius: 8px;
     }
 
@@ -128,7 +132,7 @@
 
     #logout-button {
       border-color: var(--button-color);
-      background: #fff;
+      background: var(--surface);
       color: var(--button-color);
     }
 
@@ -136,7 +140,7 @@
     #cancel-upload,
     #cancel-delete {
       border-color: var(--button-color);
-      background: #fff;
+      background: var(--surface);
       color: var(--button-color);
     }
 
@@ -151,6 +155,7 @@
       padding: 24px;
       border: 1px solid var(--line);
       border-radius: 8px;
+      background: var(--surface);
       color: var(--ink);
     }
 
@@ -187,7 +192,7 @@
 
     .upload-file-fields {
       display: grid;
-      grid-template-columns: minmax(72px, 0.18fr) minmax(0, 0.82fr) minmax(0, 1fr);
+      grid-template-columns: minmax(72px, 0.18fr) minmax(0, 0.82fr) minmax(0, 1fr) minmax(0, 0.7fr);
       align-items: end;
       gap: 10px;
     }
@@ -204,10 +209,18 @@
       width: 100%;
       min-height: 38px;
       padding: 7px 9px;
-      border: 1px solid #aeb8b0;
+      border: 1px solid var(--line);
       border-radius: 4px;
+      background: var(--surface);
+      color: var(--ink);
       font: inherit;
       font-weight: 400;
+    }
+
+    .upload-field select:disabled {
+      background: var(--disabled-surface);
+      color: var(--muted);
+      cursor: not-allowed;
     }
 
     .upload-dialog-actions {
@@ -298,7 +311,7 @@
 
     .track-number {
       flex: 0 0 34px;
-      color: #738178;
+      color: var(--muted);
       font-family: Georgia, "Times New Roman", serif;
       font-size: 1.15rem;
       text-align: right;
@@ -322,6 +335,14 @@
       display: block;
     }
 
+    video {
+      flex: 0 1 420px;
+      width: auto;
+      min-width: min(100%, 220px);
+      max-height: 240px;
+      display: block;
+    }
+
     .delete-recording {
       display: grid;
       width: 34px;
@@ -330,10 +351,10 @@
       margin: 0;
       padding: 0;
       place-items: center;
-      border: 1px solid #9a3e36;
+      border: 1px solid var(--danger-border);
       border-radius: 50%;
-      background: #fff;
-      color: #842d27;
+      background: var(--surface);
+      color: var(--danger);
       font: inherit;
       font-size: 1.25rem;
       line-height: 1;
@@ -350,17 +371,62 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    @media (max-width: 560px) {
-      .page-layout { grid-template-columns: minmax(0, 1fr) 140px; gap: 8px; width: calc(100% - 32px); margin: 0 16px; }
+    @media (max-width: 700px) {
+      .topbar-image { width: min(70vw, 320px); }
+      .page-layout {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0;
+        width: calc(100% - 24px);
+        margin: 0 12px;
+      }
+      .page-layout > div { grid-row: 2; min-width: 0; }
+      .register-sidebar { grid-row: 1; }
+      .register-navigation {
+        position: static;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        width: 100%;
+        margin: 12px 0 0;
+      }
+      .register-button { min-height: 44px; padding: 8px; }
+      .action-control { min-height: 44px; }
       .action-bar { padding-top: 14px; }
-      .register-navigation { width: 140px; margin-top: 14px; }
-      .register-button { padding: 7px 5px; font-size: 0.7rem; }
-      main { padding-top: 14px; }
+      main { padding: 14px 0 48px; }
       .track { gap: 8px 10px; }
       .track-number { flex-basis: 26px; }
-      .track-title { max-width: 100%; }
-      audio { flex: 1 1 280px; }
+      .track-title { max-width: calc(100% - 40px); }
+      audio, video {
+        flex: 1 1 100%;
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+      }
+      video { max-height: min(60vh, 420px); object-fit: contain; }
+      .delete-recording { width: 44px; height: 44px; }
       .section-heading { align-items: start; }
+      .upload-dialog {
+        width: min(100% - 16px, 620px);
+        max-height: 90dvh;
+        padding: clamp(16px, 5vw, 24px);
+      }
+      .upload-file-list { max-height: 56dvh; }
+      .upload-file-fields {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+      .upload-field input,
+      .upload-field select { min-height: 44px; }
+      .upload-dialog-actions { flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+      .upload-dialog-actions .action-control { flex: 1 1 120px; }
+    }
+
+    @media (max-width: 380px) {
+      .page-layout { width: calc(100% - 16px); margin: 0 8px; }
+      .register-navigation { gap: 6px; }
+      .register-button { padding: 7px 5px; font-size: 0.75rem; }
+      .upload-file-fields { grid-template-columns: minmax(0, 1fr); }
+      .upload-dialog-actions .action-control { flex-basis: 100%; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -403,7 +469,7 @@
   <dialog class="upload-dialog" id="upload-dialog" aria-labelledby="upload-dialog-title">
     <form id="upload-form">
       <h2 id="upload-dialog-title">Aufnahmen benennen</h2>
-      <p class="upload-dialog-intro">Bitte geben Sie gegebenfalls die Nummer und den Namen des Titels an.</p>
+      <p class="upload-dialog-intro">Bitte geben Sie gegebenfalls die Titelnummer, den Titelnamen und das Register an. Entscheiden Sie dann, ob die Datei als .mp3 oder gegebenfalls als .mp4 gespeichert werden soll.</p>
       <div class="upload-file-list" id="upload-file-list"></div>
       <div class="upload-dialog-actions">
         <button class="action-control action-secondary" id="cancel-upload" type="button">Abbrechen</button>
@@ -493,13 +559,14 @@
       title.className = "track-title";
       title.textContent = recording.title;
 
-      const player = document.createElement("audio");
+      const isVideo = recording.type === "video";
+      const player = document.createElement(isVideo ? "video" : "audio");
       player.controls = true;
       player.preload = "metadata";
       player.src = recording.url;
       player.setAttribute("aria-label", `${recording.title} abspielen`);
       player.addEventListener("play", () => {
-        document.querySelectorAll("audio").forEach((otherPlayer) => {
+        document.querySelectorAll("audio, video").forEach((otherPlayer) => {
           if (otherPlayer !== player) otherPlayer.pause();
         });
       });
@@ -580,6 +647,9 @@
       files.forEach((file, index) => {
         const row = document.createElement("section");
         row.className = "upload-file";
+        const extension = file.name.split(".").pop().toLowerCase();
+        const isVideo = file.type.startsWith("video/")
+          || ["3g2", "3gp", "asf", "avi", "divx", "flv", "m2ts", "m4v", "mkv", "mov", "mpe", "mpeg", "mpg", "mts", "mp4", "ogv", "ts", "vob", "webm", "wmv"].includes(extension);
 
         const filename = document.createElement("p");
         filename.className = "upload-file-name";
@@ -640,9 +710,33 @@
         });
         registerLabel.append(registerSelect);
 
+        const formatLabel = document.createElement("label");
+        formatLabel.className = "upload-field";
+        formatLabel.textContent = "Format";
+        const formatSelect = document.createElement("select");
+        formatSelect.name = `format-${index}`;
+        if (isVideo) {
+          [
+            ["mp3", "MP3 (Audio)"],
+            ["mp4", "MP4 (Video)"],
+          ].forEach(([value, label]) => {
+            const option = document.createElement("option");
+            option.value = value;
+            option.textContent = label;
+            formatSelect.append(option);
+          });
+        } else {
+          const option = document.createElement("option");
+          option.value = extension === "mp3" ? "mp3" : "original";
+          option.textContent = extension === "mp3" ? "MP3" : `Original (${extension.toUpperCase()})`;
+          formatSelect.append(option);
+          formatSelect.disabled = true;
+        }
+        formatLabel.append(formatSelect);
+
         const fields = document.createElement("div");
         fields.className = "upload-file-fields";
-        fields.append(numberLabel, titleLabel, registerLabel);
+        fields.append(numberLabel, titleLabel, registerLabel, formatLabel);
         row.append(filename, fields);
         uploadFileList.append(row);
       });
@@ -761,6 +855,7 @@
           ? null
           : Number(uploadForm.elements.namedItem(`number-${index}`).value),
         register: uploadForm.elements.namedItem(`register-${index}`).value.trim().normalize("NFC"),
+        format: uploadForm.elements.namedItem(`format-${index}`).value,
       }));
       const formData = new FormData();
       files.forEach((file) => formData.append("audio", file));
@@ -795,6 +890,11 @@
     });
 
     (async () => {
+      const navigation = performance.getEntriesByType("navigation")[0];
+      if (navigation?.type === "reload") {
+        const response = await fetch("/api/logout", { method: "POST", cache: "no-store" });
+        if (!response.ok) throw new Error("Vorherige Anmeldung konnte nicht beendet werden.");
+      }
       await refreshAuthentication();
       await loadRecordings();
     })().catch(() => {

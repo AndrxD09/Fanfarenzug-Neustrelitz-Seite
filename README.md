@@ -14,12 +14,16 @@ Die `.env`-Datei wird nicht in Git eingecheckt. Alternativ kann `AUDIO_UPLOAD_PA
 npm run dev
 ```
 
-`AUDIO_UPLOAD_PASSWORD` legt das Passwort für Uploads und Löschen fest. Ohne gesetztes Passwort bleiben die Aufnahmen öffentlich abspielbar, aber Änderungen sind gesperrt. Upload- und Löschrechte werden zusätzlich serverseitig geprüft; die Anmeldung bleibt bis zu acht Stunden oder bis zum Abmelden gültig.
+`AUDIO_UPLOAD_PASSWORD` legt das Passwort für Uploads und Löschen fest. Ohne gesetztes Passwort bleiben die Aufnahmen öffentlich abspielbar, aber Änderungen sind gesperrt. Upload- und Löschrechte werden zusätzlich serverseitig geprüft; die Anmeldung bleibt bis zu acht Stunden oder bis zum Abmelden gültig. Beim Neuladen der Seite wird die Anmeldung beendet.
 
 Die Seite ist anschließend unter `http://localhost:5173` erreichbar.
 
-Für Video-Uploads muss außerdem FFmpeg installiert und über `PATH` erreichbar sein. Videos werden serverseitig in MP3 umgewandelt; auf der Seite erscheinen sie wie andere Audios.
+Die Seite und die Anmeldeseite werden immer im hellen Farbschema dargestellt.
 
-Hochgeladene Audios liegen im Ordner `uploads/`; Titel, optionale Nummer (1–30), Register und Dateinamen werden in `data/audio.sqlite3` gespeichert. Das Register muss beim Upload aus den vorgegebenen Bläser- und Trommelstimmen gewählt werden. Nummerierte Aufnahmen werden aufsteigend sortiert; Aufnahmen ohne Nummer folgen alphabetisch. Beide Ordner werden beim ersten Start angelegt und sind von Git ausgeschlossen. Für Backups müssen beide Ordner gesichert werden.
+Auf schmalen Bildschirmen stehen Registerauswahl und Aufnahmeinhalte untereinander; Upload-Dialoge und Bedienelemente passen sich der verfügbaren Breite an.
+
+Für Video-Uploads muss außerdem FFmpeg installiert und über `PATH` erreichbar sein. Im Upload-Fenster kann pro Video MP3 (Audiospur extrahieren) oder MP4 (Video nach MP4 konvertieren) gewählt werden. MP4-Dateien werden mit einem Videoplayer wiedergegeben und am Ende der Liste angezeigt. Die MP3-Umwandlung verhält sich wie bisher; diese Dateien erscheinen als Audioaufnahmen. Audio-Uploads behalten ihr ursprüngliches Format.
+
+Hochgeladene Medien liegen im Ordner `uploads/`; Titel, optionale Nummer (1–30), Register, Medientyp und Dateinamen werden in `data/audio.sqlite3` gespeichert. Das Register muss beim Upload aus den vorgegebenen Bläser- und Trommelstimmen gewählt werden. Audios werden zuerst angezeigt: Nummerierte Aufnahmen werden aufsteigend sortiert; Aufnahmen ohne Nummer folgen alphabetisch. MP4-Videos folgen am Ende. Beide Ordner werden beim ersten Start angelegt und sind von Git ausgeschlossen. Für Backups müssen beide Ordner gesichert werden.
 
 Der Server ist für die lokale Entwicklung gedacht und auf 100 MB pro Anfrage begrenzt. Für einen öffentlichen Betrieb sind HTTPS, ein starkes eigenes Passwort und ein dauerhafter, gesicherter Speicherort für Datenbank und Audiodateien erforderlich.
