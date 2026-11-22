@@ -61,6 +61,7 @@ REGISTERS = {
     "Blaeser 4. Stimme",
     "Trommel",
     "Hochtrommel",
+    "Stab",
 }
 
 
