@@ -103,7 +103,13 @@
     .register-button[data-register="Trommel"]:hover,
     .register-button[data-register="Trommel"]:focus,
     .register-button[data-register="Trommel"]:active,
-    .register-button[data-register="Trommel"]:focus-visible {
+    .register-button[data-register="Trommel"]:focus-visible,
+    .register-button[data-register="Stab"],
+    .register-button[data-register="Stab"][aria-pressed="true"],
+    .register-button[data-register="Stab"]:hover,
+    .register-button[data-register="Stab"]:focus,
+    .register-button[data-register="Stab"]:active,
+    .register-button[data-register="Stab"]:focus-visible {
       background: #fff !important;
       color: #103d69 !important;
       border-color: #103d69 !important;
@@ -540,6 +546,7 @@
         <button class="action-control action-secondary register-button" type="button" data-register="Blaeser 4. Stimme" aria-pressed="false">Bläser 4. Stimme</button>
         <button class="action-control action-secondary register-button" type="button" data-register="Hochtrommel" aria-pressed="false">Hochtrommel</button>
         <button class="action-control action-secondary register-button" type="button" data-register="Trommel" aria-pressed="false">Trommel</button>
+        <button class="action-control action-secondary register-button" type="button" data-register="Stab" aria-pressed="false">Stab</button>
       </div>
     </aside>
   </div>
@@ -733,6 +740,7 @@
           "Blaeser 4. Stimme",
           "Trommel",
           "Hochtrommel",
+          "Stab",
         ].forEach((value) => {
           const option = document.createElement("option");
           option.value = value;
