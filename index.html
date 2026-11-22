@@ -11,7 +11,7 @@
       color-scheme: light;
       --forest: #183c32;
       --forest-deep: #102b25;
-      --button-color: #2f3647;
+      --button-color: #103d69;
       --gold: #d3a94f;
       --paper: #fff;
       --surface: #fff;
@@ -91,9 +91,34 @@
       font-size: 0.8rem;
     }
 
-    .register-button[aria-pressed="true"] {
+    /* Ausgewählte Register – außer Trommel und Hochtrommel */
+    .register-button[aria-pressed="true"]:not([data-register="Trommel"]):not([data-register="Hochtrommel"]) {
       background: var(--button-color);
       color: #fff;
+    }
+
+    /* Trommel behält in jedem Zustand die weiße Gestaltung */
+    .register-button[data-register="Trommel"],
+    .register-button[data-register="Trommel"][aria-pressed="true"],
+    .register-button[data-register="Trommel"]:hover,
+    .register-button[data-register="Trommel"]:focus,
+    .register-button[data-register="Trommel"]:active,
+    .register-button[data-register="Trommel"]:focus-visible {
+      background: #fff !important;
+      color: #103d69 !important;
+      border-color: #103d69 !important;
+    }
+
+    /* Hochtrommel behält in jedem Zustand die rote Gestaltung */
+    .register-button[data-register="Hochtrommel"],
+    .register-button[data-register="Hochtrommel"][aria-pressed="true"],
+    .register-button[data-register="Hochtrommel"]:hover,
+    .register-button[data-register="Hochtrommel"]:focus,
+    .register-button[data-register="Hochtrommel"]:active,
+    .register-button[data-register="Hochtrommel"]:focus-visible {
+      background: #c62828 !important;
+      color: #fff !important;
+      border-color: #c62828 !important;
     }
 
     .action-control {
@@ -402,6 +427,11 @@
         min-width: 0;
         max-width: 100%;
       }
+      .track.has-delete audio,
+      .track.has-delete video {
+        flex-basis: calc(100% - 54px);
+        width: calc(100% - 54px);
+      }
       video { max-height: min(60vh, 420px); object-fit: contain; }
       .delete-recording { width: 44px; height: 44px; }
       .section-heading { align-items: start; }
@@ -508,8 +538,8 @@
         <button class="action-control action-secondary register-button" type="button" data-register="Blaeser 2. Stimme" aria-pressed="false">Bläser 2. Stimme</button>
         <button class="action-control action-secondary register-button" type="button" data-register="Blaeser 3. Stimme" aria-pressed="false">Bläser 3. Stimme</button>
         <button class="action-control action-secondary register-button" type="button" data-register="Blaeser 4. Stimme" aria-pressed="false">Bläser 4. Stimme</button>
-        <button class="action-control action-secondary register-button" type="button" data-register="Trommel" aria-pressed="false">Trommel</button>
         <button class="action-control action-secondary register-button" type="button" data-register="Hochtrommel" aria-pressed="false">Hochtrommel</button>
+        <button class="action-control action-secondary register-button" type="button" data-register="Trommel" aria-pressed="false">Trommel</button>
       </div>
     </aside>
   </div>
@@ -545,6 +575,7 @@
     function createTrack(recording) {
       const track = document.createElement("article");
       track.className = "track";
+      track.classList.toggle("has-delete", isAuthenticated);
 
       const number = document.createElement("span");
       number.className = "track-number";
