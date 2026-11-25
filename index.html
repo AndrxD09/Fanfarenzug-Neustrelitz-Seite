@@ -448,12 +448,23 @@
       .register-navigation {
         position: static;
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 8px;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 6px;
         width: 100%;
         margin: 12px 0 0;
         padding-bottom: 12px;
         border-bottom: 1px solid var(--button-color);
+      }
+      .register-navigation > .nav-group {
+        min-width: 0;
+      }
+      .register-navigation > .nav-group > .nav-top {
+        width: 100%;
+        min-width: 0;
+        padding: 7px 4px;
+        font-size: 0.75rem;
+        text-align: center;
+        overflow-wrap: anywhere;
       }
       .register-button { min-height: 44px; padding: 8px; }
       .action-control { min-height: 44px; }
