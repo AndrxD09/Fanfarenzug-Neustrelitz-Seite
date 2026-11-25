@@ -508,6 +508,18 @@
         transition-duration: 0.01ms !important;
       }
     }
+
+    /* Stab dauerhaft blau wie die Melodie-Buttons */
+    .register-navigation .register-button[data-register="Stab"],
+    .register-navigation .register-button[data-register="Stab"][aria-pressed="true"],
+    .register-navigation .register-button[data-register="Stab"]:hover,
+    .register-navigation .register-button[data-register="Stab"]:focus,
+    .register-navigation .register-button[data-register="Stab"]:active,
+    .register-navigation .register-button[data-register="Stab"]:focus-visible {
+      background: var(--button-color) !important;
+      color: #fff !important;
+      border-color: var(--button-color) !important;
+    }
   </style>
 </head>
 <body>
@@ -974,14 +986,3 @@
   </script>
 </body>
 </html>
-    /* Stab dauerhaft blau wie die Melodie-Buttons */
-    .register-navigation .register-button[data-register="Stab"],
-    .register-navigation .register-button[data-register="Stab"][aria-pressed="true"],
-    .register-navigation .register-button[data-register="Stab"]:hover,
-    .register-navigation .register-button[data-register="Stab"]:focus,
-    .register-navigation .register-button[data-register="Stab"]:active,
-    .register-navigation .register-button[data-register="Stab"]:focus-visible {
-      background: var(--button-color) !important;
-      color: #fff !important;
-      border-color: var(--button-color) !important;
-    }
