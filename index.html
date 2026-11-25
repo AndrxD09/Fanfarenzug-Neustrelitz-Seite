@@ -90,6 +90,11 @@
       padding: 7px 9px;
       font-size: 0.8rem;
     }
+    .nav-group, .nav-sub { display: grid; gap: 6px; }
+    .nav-sub { padding-left: 12px; }
+    .nav-top, .nav-mid { text-align: left; }
+    .nav-mid { background: #fff; color: var(--button-color); }
+    [hidden] { display: none !important; }
 
     /* Ausgewählte Register – außer Trommel und Hochtrommel */
     .register-button[aria-pressed="true"]:not([data-register="Trommel"]):not([data-register="Hochtrommel"]) {
@@ -540,17 +545,12 @@
     </section>
   </main>
     </div>
-    <aside class="register-sidebar" aria-label="Register-Navigation">
-      <div class="register-navigation" role="group" aria-label="Register">
-        <button class="action-control action-secondary register-button" type="button" data-register="Blaeser 1. Stimme" aria-pressed="true">Bläser 1. Stimme</button>
-        <button class="action-control action-secondary register-button" type="button" data-register="Blaeser 2. Stimme" aria-pressed="false">Bläser 2. Stimme</button>
-        <button class="action-control action-secondary register-button" type="button" data-register="Blaeser 3. Stimme" aria-pressed="false">Bläser 3. Stimme</button>
-        <button class="action-control action-secondary register-button" type="button" data-register="Blaeser 4. Stimme" aria-pressed="false">Bläser 4. Stimme</button>
-        <button class="action-control action-secondary register-button" type="button" data-register="Hochtrommel" aria-pressed="false">Hochtrommel</button>
-        <button class="action-control action-secondary register-button" type="button" data-register="Trommel" aria-pressed="false">Trommel</button>
-        <button class="action-control action-secondary register-button" type="button" data-register="Stab" aria-pressed="false">Stab</button>
-      </div>
-    </aside>
+    <aside class="register-sidebar" aria-label="Register-Navigation"><div class="register-navigation" role="group" aria-label="Register">
+<div class="nav-group"><button class="action-control action-secondary nav-top" data-group="rhythm" type="button">Rhythmus</button><div class="nav-sub" data-panel="rhythm" hidden>
+<button class="action-control action-secondary nav-mid" data-group="tomtom" type="button">TomTom</button><div class="nav-sub" data-panel="tomtom" hidden><button class="action-control action-secondary register-button" data-register="TomTom - Titel" type="button">Titel</button><button class="action-control action-secondary register-button" data-register="TomTom - Trommeltitel" type="button">Trommeltitel</button></div>
+<button class="action-control action-secondary nav-mid" data-group="marschtrommel" type="button">Marschtrommel</button><div class="nav-sub" data-panel="marschtrommel" hidden><button class="action-control action-secondary register-button" data-register="Marschtrommel - Titel" type="button">Titel</button><button class="action-control action-secondary register-button" data-register="Marschtrommel - Trommeltitel" type="button">Trommeltitel</button></div></div></div>
+<div class="nav-group"><button class="action-control action-secondary nav-top" data-group="melodie" type="button">Melodie</button><div class="nav-sub" data-panel="melodie" hidden><button class="action-control action-secondary register-button" data-register="Blaeser 1. Stimme" type="button">Bläser 1. Stimme</button><button class="action-control action-secondary register-button" data-register="Blaeser 2. Stimme" type="button">Bläser 2. Stimme</button><button class="action-control action-secondary register-button" data-register="Blaeser 3. Stimme" type="button">Bläser 3. Stimme</button><button class="action-control action-secondary register-button" data-register="Blaeser 4. Stimme" type="button">Bläser 4. Stimme</button></div></div>
+<div class="nav-group"><button class="action-control action-secondary nav-top" data-group="allgemein" type="button">Allgemein</button><div class="nav-sub" data-panel="allgemein" hidden><button class="action-control action-secondary register-button" data-register="Stab" type="button">Stab</button><button class="action-control action-secondary nav-mid" data-group="warmup" type="button">Warm-Up</button><div class="nav-sub" data-panel="warmup" hidden><button class="action-control action-secondary register-button" data-register="Warm-Up - TomTom" type="button">TomTom</button><button class="action-control action-secondary register-button" data-register="Warm-Up - Trommler" type="button">Trommler</button><button class="action-control action-secondary register-button" data-register="Warm-Up - Oberstimme" type="button">Oberstimme</button><button class="action-control action-secondary register-button" data-register="Warm-Up - Grundstimme" type="button">Grundstimme</button></div></div></div></div></aside>
   </div>
 
   <script>
@@ -574,7 +574,7 @@
     const trackCount = document.querySelector("#track-count");
     const emptyState = document.querySelector("#empty-state");
     const recordingsTitle = document.querySelector("#recordings-title");
-    const registerButtons = Array.from(document.querySelectorAll(".register-button"));
+    const registerButtons = Array.from(document.querySelectorAll(".register-button"));\n    const navGroupButtons = Array.from(document.querySelectorAll("[data-group]"));
     let activeRegister = "Blaeser 1. Stimme";
     let isAuthenticated = false;
     let loginFollowUp = "select-file";
@@ -647,7 +647,8 @@
     }
 
     function renderRecordings(recordings) {
-      const registerRecordings = recordings.filter((recording) => recording.register === activeRegister);
+      const aliases = { "Trommel": "Marschtrommel - Titel", "Hochtrommel": "TomTom - Titel" };
+      const registerRecordings = recordings.filter((recording) => (aliases[recording.register] || recording.register) === activeRegister);
       const registerLabel = activeRegister.replace("Blaeser", "Bläser");
       trackList.replaceChildren();
       recordingsTitle.textContent = registerLabel;
@@ -664,12 +665,15 @@
       });
     }
 
+    navGroupButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const panel = document.querySelector(`[data-panel="${button.dataset.group}"]`);
+        if (panel) panel.hidden = !panel.hidden;
+      });
+    });
     registerButtons.forEach((button) => {
       button.addEventListener("click", () => {
         activeRegister = button.dataset.register;
-        registerButtons.forEach((registerButton) => {
-          registerButton.setAttribute("aria-pressed", String(registerButton === button));
-        });
         if (savedRecordings !== null) renderRecordings(savedRecordings);
       });
     });
@@ -736,13 +740,10 @@
         placeholder.selected = true;
         registerSelect.append(placeholder);
         [
-          "Blaeser 1. Stimme",
-          "Blaeser 2. Stimme",
-          "Blaeser 3. Stimme",
-          "Blaeser 4. Stimme",
-          "Trommel",
-          "Hochtrommel",
-          "Stab",
+          "TomTom - Titel", "TomTom - Trommeltitel",
+          "Marschtrommel - Titel", "Marschtrommel - Trommeltitel",
+          "Blaeser 1. Stimme", "Blaeser 2. Stimme", "Blaeser 3. Stimme", "Blaeser 4. Stimme",
+          "Stab", "Warm-Up - TomTom", "Warm-Up - Trommler", "Warm-Up - Oberstimme", "Warm-Up - Grundstimme",
         ].forEach((value) => {
           const option = document.createElement("option");
           option.value = value;
