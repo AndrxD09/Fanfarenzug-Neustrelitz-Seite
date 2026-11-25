@@ -653,13 +653,14 @@
     const deleteMessage = document.querySelector("#delete-message");
     const confirmDeleteButton = document.querySelector("#confirm-delete");
     const logoutButton = document.querySelector("#logout-button");
+    const recordingsSection = document.querySelector("#recordings");
     const trackList = document.querySelector(".track-list");
     const trackCount = document.querySelector("#track-count");
     const emptyState = document.querySelector("#empty-state");
     const recordingsTitle = document.querySelector("#recordings-title");
     const registerButtons = Array.from(document.querySelectorAll(".register-button"));
     const navGroupButtons = Array.from(document.querySelectorAll("[data-group]"));
-    let activeRegister = "Blaeser 1. Stimme";
+    let activeRegister = null;
     let isAuthenticated = false;
     let loginFollowUp = "select-file";
     let pendingDeletion = null;
@@ -731,6 +732,15 @@
     }
 
     function renderRecordings(recordings) {
+      if (!activeRegister) {
+        recordingsSection.hidden = true;
+        trackList.replaceChildren();
+        recordingsTitle.textContent = "Aufnahmen";
+        trackCount.textContent = "0 Titel";
+        return;
+      }
+
+      recordingsSection.hidden = false;
       const aliases = { "Trommel": "Marschtrommel - Titel", "Hochtrommel": "TomTom - Titel" };
       const registerRecordings = recordings.filter((recording) => (aliases[recording.register] || recording.register) === activeRegister);
       const registerLabel = activeRegister.replace("Blaeser", "Bläser");
