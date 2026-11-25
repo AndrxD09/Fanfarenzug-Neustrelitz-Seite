@@ -96,6 +96,28 @@
     .nav-mid { background: #fff; color: var(--button-color); }
     [hidden] { display: none !important; }
 
+    /* Button-Farben nach Navigationsebene */
+    .register-navigation .nav-top {
+      background: #c62828 !important;
+      color: #fff !important;
+      border-color: #c62828 !important;
+    }
+    .register-navigation .nav-mid {
+      background: var(--button-color) !important;
+      color: #fff !important;
+      border-color: var(--button-color) !important;
+    }
+    .register-navigation .register-button {
+      background: #fff !important;
+      color: var(--button-color) !important;
+      border-color: var(--button-color) !important;
+    }
+    .register-navigation .register-button:hover,
+    .register-navigation .register-button:focus-visible {
+      background: #f0f4f8 !important;
+      color: var(--button-color) !important;
+    }
+
     /* Ausgewählte Register – außer Trommel und Hochtrommel */
     .register-button[aria-pressed="true"]:not([data-register="Trommel"]):not([data-register="Hochtrommel"]) {
       background: var(--button-color);
