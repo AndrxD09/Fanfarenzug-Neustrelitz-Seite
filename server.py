@@ -55,13 +55,11 @@ VIDEO_EXTENSIONS = {
     ".ts", ".vob", ".webm", ".wmv",
 }
 REGISTERS = {
-    "Blaeser 1. Stimme",
-    "Blaeser 2. Stimme",
-    "Blaeser 3. Stimme",
-    "Blaeser 4. Stimme",
-    "Trommel",
-    "Hochtrommel",
-    "Stab",
+    "Blaeser 1. Stimme", "Blaeser 2. Stimme", "Blaeser 3. Stimme", "Blaeser 4. Stimme",
+    "Trommel", "Hochtrommel", "Stab",
+    "TomTom - Titel", "TomTom - Trommeltitel",
+    "Marschtrommel - Titel", "Marschtrommel - Trommeltitel",
+    "Warm-Up - TomTom", "Warm-Up - Trommler", "Warm-Up - Oberstimme", "Warm-Up - Grundstimme",
 }
 
 
