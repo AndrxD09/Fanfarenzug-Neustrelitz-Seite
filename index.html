@@ -457,6 +457,17 @@
       }
       .register-navigation > .nav-group {
         min-width: 0;
+        align-self: start;
+      }
+      .register-navigation > .nav-group > .nav-sub {
+        width: 100%;
+        min-width: 0;
+      }
+      .register-navigation > .nav-group > .nav-sub[hidden] {
+        display: none !important;
+      }
+      .register-navigation > .nav-group > .nav-sub:not([hidden]) {
+        grid-column: 1 / -1;
       }
       .register-navigation > .nav-group > .nav-top {
         width: 100%;
